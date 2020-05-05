@@ -14,8 +14,6 @@ What's next?
 - Build a suite of metrics (FROC, mAP)
 - Possibly visualizations
 
-Thank you again to JHultman and the writers of [PV-RCNN](https://arxiv.org/pdf/1912.13192) for providing a starting point to develop this detection code and for providing such a fascinating idea to work on.
-
 # PV-RCNN
 An unofficial Pytorch implementation of [PV-RCNN](https://arxiv.org/pdf/1912.13192): Point-Voxel Feature Set Abstraction for 3D Object Detection.
 
