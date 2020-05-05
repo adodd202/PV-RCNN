@@ -1,8 +1,9 @@
 ### Preface
-The original creator of the code branched for this project is JHultman, whose [PV-RCNN code can be found here.](https://github.com/jhultman/vision3d). I am also collaborating with my friend, [Dean](dgoldman916), on this project. 
+The original creator of the code branched for this project is [Jacob Hultman](https://github.com/jhultman), whose PV-RCNN code can be found [here](https://github.com/jhultman/vision3d). I am also collaborating with my friend, [Dean](dgoldman916), on this project. 
 
 Specifically our goals of this fork are to complete the PV-RCNN implementation begun by JHultman. I have so far built:
 - The keypoint weighting module
+- Begun the overall loss function (in development)
 
 What's next?
 - Overall PV-RCNN loss function
