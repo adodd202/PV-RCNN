@@ -24,12 +24,14 @@ class Second(nn.Module):
         return features
 
     def forward(self, item):
+        import pdb; pdb.set_trace()
         features = self.feature_extract(item)
         scores, boxes = self.head(features)
         item.update(dict(P_cls=scores, P_reg=boxes))
         return item
 
     def inference(self, item):
+        # import pdb; pdb.set_trace()
         features = self.feature_extract(item)
         out = self.head.inference(features, item['anchors'])
         return out

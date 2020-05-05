@@ -48,3 +48,14 @@ class RefinementLayer(nn.Module):
         refinements = self.mlp(features.permute(0, 2, 1))
         box_deltas, scores = refinements.split(1)
         return box_deltas, scores
+
+
+class RefinementLoss(nn.Module):
+    """ TODO """
+
+    def __init__(self, cfg):
+        super(RefinementLoss, self).__init__()
+        self.cfg = cfg
+
+    def forward(self, points, features, boxes):
+        raise NotImplementedError()

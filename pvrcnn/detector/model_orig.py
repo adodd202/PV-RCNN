@@ -11,7 +11,6 @@ from .roi_grid_pool import RoiGridPool
 from .sparse_cnn import CNN_FACTORY
 from .proposal import ProposalLayer
 from .refinement import RefinementLayer
-from .keypoint_weighting import KeypointFeatureWeighting
 
 
 class PV_RCNN(nn.Module):
@@ -31,7 +30,6 @@ class PV_RCNN(nn.Module):
             cfg, self.cnn.voxel_offset, self.cnn.base_voxel_size)
         self.proposal_layer = ProposalLayer(cfg)
         self.refinement_layer = RefinementLayer(cfg)
-        self.keypoint_weighting = KeypointFeatureWeighting(cfg)
         self.cfg = cfg
 
     def build_pointnets(self, cfg):
@@ -76,25 +74,12 @@ class PV_RCNN(nn.Module):
         return point_features
 
     def proposal(self, item):
-        """
-        Outputs: cnn_features, a list of length 4
-        """
         item['keypoints'] = self.sample_keypoints(item['points'])
         features = self.vfe(item['features'], item['occupancy'])
         cnn_features, bev_map = self.cnn(features, item['coordinates'], item['batch_size'])
         scores, boxes = self.proposal_layer(bev_map)
         item.update(dict(P_cls=scores, P_reg=boxes))
-        return item, cnn_features, bev_map
+        return item
 
     def forward(self, item):
-        item, cnn_features, bev_map = self.proposal(item)
-        point_features = self.point_feature_extract(item, cnn_features, bev_map)
-        item, point_features = self.keypoint_weighting(item, point_features)
-        import pdb; pdb.set_trace()
-        # Need to subset keypoints
-        features = self.roi_grid_pool(item['P_reg'], item['keypoints'], point_features)
-        box_deltas, scores = self.refinement_layer(points, features, boxes)
-
-    def inference(self, item):
-        raise NotImplementedError()
-        
+        raise NotImplementedError

@@ -8,7 +8,7 @@ from pvrcnn.detector import Second
 
 
 def viz_detections(points, boxes):
-    boxes = boxes.cpu().numpy()
+    boxes = boxes.detach().cpu().numpy()
     bev_map = Drawer(points, [boxes]).image
     fig, ax = plt.subplots(figsize=(8, 8))
     ax.imshow(bev_map.transpose(1, 0, 2)[::-1])
@@ -22,21 +22,27 @@ def get_model(cfg):
     anchors = AnchorGenerator(cfg).anchors
     preprocessor = Preprocessor(cfg)
     model = Second(cfg).cuda().eval()
-    ckpt = torch.load('../pvrcnn/ckpts/epoch_12.pth')['state_dict']
+    ckpt = torch.load('../pvrcnn/ckpts/epoch_59.pth')['state_dict']
     model.load_state_dict(ckpt, strict=True)
     return model, preprocessor, anchors
 
 
 def main():
     model, preprocessor, anchors = get_model(cfg)
-    fpath = '../data/kitti/training/velodyne_reduced/000032.bin'
+    fpath = '../data/kitti/training/velodyne/000037.bin'
     points = np.fromfile(fpath, np.float32).reshape(-1, 4)
     with torch.no_grad():
         item = preprocessor(dict(points=[points], anchors=anchors))
         for key in ['points', 'features', 'coordinates', 'occupancy', 'anchors']:
             item[key] = item[key].cuda()
-        boxes, batch_idx, class_idx, scores = model.inference(item)
+    boxes, batch_idx, class_idx, scores = model.inference(item)
+    print(f"""
+        boxes: {boxes}
+        batch_id: {batch_idx}
+        class_idx: {class_idx}
+        scores: {scores}""")
     viz_detections(points, boxes)
+    return (boxes, batch_idx, class_idx, scores)
 
 
 if __name__ == '__main__':

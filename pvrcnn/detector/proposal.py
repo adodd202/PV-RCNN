@@ -32,8 +32,10 @@ class ProposalLayer(nn.Module):
     def _generate_group_idx(self, B, n_cls):
         """Compute unique group_idx based on (batch_idx, class_idx) tuples."""
         batch_idx = torch.arange(B)[:, None].expand(-1, n_cls)
+        print(f"BATCH IDX: {batch_idx} N_CLS: {n_cls}")
         class_idx = torch.arange(n_cls)[None, :].expand(B, -1)
         group_idx = class_idx + n_cls * batch_idx
+        print(f"CLASS IDX: {class_idx} group_idx: {group_idx}")
         b, c, g = [x[..., None].expand(-1, -1, self.TOPK).reshape(-1)
             for x in (batch_idx, class_idx, group_idx)]
         return b, c, g
@@ -76,6 +78,7 @@ class ProposalLayer(nn.Module):
         B, n_cls = score_map.shape[:2]
         scores, anchor_idx = score_map.view(B, n_cls, -1).topk(self.TOPK, -1)
         boxes = self._decode(reg_map, anchors, anchor_idx)
+        print(f"SCORES: {scores.shape} -- {scores.shape[:2]}")
         out = self._multiclass_batch_nms(boxes, scores)
         return out
 

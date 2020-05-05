@@ -5,7 +5,7 @@ from tqdm import tqdm
 from torch.utils.data import DataLoader
 import multiprocessing
 
-from pvrcnn.detector import ProposalLoss, PV_RCNN, Second
+from pvrcnn.detector import ProposalLoss, PV_RCNN, Second, OverallLoss
 from pvrcnn.core import cfg, TrainPreprocessor, VisdomLinePlotter
 from pvrcnn.dataset import KittiDatasetTrain
 
@@ -15,7 +15,7 @@ def build_train_dataloader(cfg, preprocessor):
         KittiDatasetTrain(cfg),
         collate_fn=preprocessor.collate,
         batch_size=cfg.TRAIN.BATCH_SIZE,
-        num_workers=6,
+        num_workers=4, #6
     )
     return dataloader
 
@@ -76,15 +76,19 @@ def build_lr_scheduler(optimizer, cfg, start_epoch, N):
     last_epoch = start_epoch * N / cfg.TRAIN.BATCH_SIZE
     scheduler = torch.optim.lr_scheduler.OneCycleLR(
         optimizer, max_lr=0.01, steps_per_epoch=N,
-        epochs=cfg.TRAIN.EPOCHS, last_epoch=last_epoch)
+        epochs=cfg.TRAIN.EPOCHS)
+        #, last_epoch=last_epoch)
     return scheduler
 
 
 def main():
     """TODO: Trainer class to manage objects."""
-    model = Second(cfg).cuda()
+    # model = Second(cfg).cuda()
+    model = PV_RCNN(cfg).cuda()
+    print("Number parameters: ", sum(p.numel() for p in model.parameters() if p.requires_grad))
     parameters = model.parameters()
     loss_fn = ProposalLoss(cfg)
+    # loss_fn = OverallLoss(cfg)
     preprocessor = TrainPreprocessor(cfg)
     dataloader = build_train_dataloader(cfg, preprocessor)
     optimizer = torch.optim.Adam(parameters, lr=0.01)
@@ -100,6 +104,7 @@ if __name__ == '__main__':
     except RuntimeError:
         pass
     global plotter
-    plotter = VisdomLinePlotter(env='second')
-    cfg.merge_from_file('../configs/second/car.yaml')
+    plotter = VisdomLinePlotter(env='pvrcnn_testing')
+    # cfg.merge_from_file('../configs/second/car.yaml')
+    cfg.merge_from_file('../configs/pvrcnn/car.yaml')
     main()
