@@ -1,7 +1,7 @@
 ### Preface
-The original creator of the code branched for this project JHultman, whose [PV-RCNN code can be found here.](https://github.com/jhultman/vision3d). I am also collaborating with my friend, [Dean](dgoldman916), on this project. 
+The original creator of the code branched for this project is JHultman, whose [PV-RCNN code can be found here.](https://github.com/jhultman/vision3d). I am also collaborating with my friend, [Dean](dgoldman916), on this project. 
 
-Specifically our goals of this fork is to complete the PV-RCNN implementation begun by JHultman. I have so far built:
+Specifically our goals of this fork are to complete the PV-RCNN implementation begun by JHultman. I have so far built:
 - The keypoint weighting module
 
 What's next?
@@ -13,7 +13,7 @@ What's next?
 - Build a suite of metrics (FROC, mAP)
 - Possibly visualizations
 
-Thank you again to JHultman and the writers of [PV-RCNN](https://arxiv.org/pdf/1912.13192) for providing a starting point to develop this detection code.
+Thank you again to JHultman and the writers of [PV-RCNN](https://arxiv.org/pdf/1912.13192) for providing a starting point to develop this detection code and for providing such a fascinating idea to work on.
 
 # PV-RCNN
 An unofficial Pytorch implementation of [PV-RCNN](https://arxiv.org/pdf/1912.13192): Point-Voxel Feature Set Abstraction for 3D Object Detection.
